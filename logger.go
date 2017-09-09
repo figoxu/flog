@@ -1,79 +1,46 @@
 package flog
 
-
-
-type LEVEL int32
-type UNIT int64
-type _ROLLTYPE int
-
-const _DATEFORMAT = "2006-01-02"
-
-var logLevel LEVEL = 1
-
-const (
-	_       = iota
-	KB UNIT = 1 << (iota * 10)
-	MB
-	GB
-	TB
-)
-
-const (
-	ALL LEVEL = iota
-	DEBUG
-	INFO
-	WARN
-	ERROR
-	FATAL
-	OFF
-)
-
-const (
-	_DAILY _ROLLTYPE = iota
-	_ROLLFILE
-)
-
-func SetConsole(isConsole bool) {
-	defaultlog.setConsole(isConsole)
+type logger struct {
+	lb *logBean
 }
 
-func SetLevel(_level LEVEL) {
-	defaultlog.setLevel(_level)
+func (p *logger) SetConsole(isConsole bool) {
+	p.lb.setConsole(isConsole)
 }
 
-func SetFormat(logFormat string) {
-	defaultlog.setFormat(logFormat)
+func (p *logger) SetLevel(_level LEVEL) {
+	p.lb.setLevel(_level)
 }
 
-func SetRollingFile(fileDir, fileName string, maxNumber int32, maxSize int64, _unit UNIT) {
-	defaultlog.setRollingFile(fileDir, fileName, maxNumber, maxSize, _unit)
+func (p *logger) SetFormat(logFormat string) {
+	p.lb.setFormat(logFormat)
 }
 
-func SetRollingDaily(fileDir, fileName string) {
-	defaultlog.setRollingDaily(fileDir, fileName)
+func (p *logger) SetRollingFile(fileDir, fileName string, maxNumber int32, maxSize int64, _unit UNIT) {
+	p.lb.setRollingFile(fileDir, fileName, maxNumber, maxSize, _unit)
 }
 
-
-func Debug(v ...interface{}) {
-	defaultlog.debug(v...)
+func (p *logger) SetRollingDaily(fileDir, fileName string) {
+	p.lb.setRollingDaily(fileDir, fileName)
 }
 
-func Info(v ...interface{}) {
-	defaultlog.info(v...)
+func (p *logger) Debug(v ...interface{}) {
+	p.lb.debug(v...)
 }
 
-func Warn(v ...interface{}) {
-	defaultlog.warn(v...)
+func (p *logger) Info(v ...interface{}) {
+	p.lb.info(v...)
+}
+func (p *logger) Warn(v ...interface{}) {
+	p.lb.warn(v...)
+}
+func (p *logger) Error(v ...interface{}) {
+	p.lb.error(v...)
+}
+func (p *logger) Fatal(v ...interface{}) {
+	p.lb.fatal(v...)
 }
 
-func Error(v ...interface{}) {
-	defaultlog.error(v...)
-}
-
-func Fatal(v ...interface{}) {
-	defaultlog.fatal(v...)
-}
-
-func SetLevelFile(level LEVEL, dir, fileName string) {
-	defaultlog.setLevelFile(level, dir, fileName)
+func (p *logger) SetLevelFile(level LEVEL, dir, fileName string) {
+	p.lb.setLevelFile(level, dir, fileName)
 }
