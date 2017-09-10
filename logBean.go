@@ -21,11 +21,11 @@ type logBean struct {
 	d, i, w, e, f   string //id
 }
 
-func (p *logBean) setConsole(isConsole bool) {
+func (p *logBean) SetConsole(isConsole bool) {
 	p.consoleAppender = isConsole
 }
 
-func (p *logBean) setLevelFile(level LEVEL, dir, fileName string) {
+func (p *logBean) SetLevelFile(level LEVEL, dir, fileName string) {
 	key := md5str(fmt.Sprint(dir, fileName))
 	switch level {
 	case DEBUG:
@@ -54,15 +54,15 @@ func (p *logBean) setLevelFile(level LEVEL, dir, fileName string) {
 	fbf.add(dir, fileName, _suffix, p.maxFileSize, p.maxFileCount)
 }
 
-func (p *logBean) setLevel(_level LEVEL) {
+func (p *logBean) SetLevel(_level LEVEL) {
 	p.logLevel = _level
 }
 
-func (p *logBean) setFormat(logFormat string) {
+func (p *logBean) SetFormat(logFormat string) {
 	p.format = logFormat
 }
 
-func (p *logBean) setRollingFile(fileDir, fileName string, maxNumber int32, maxSize int64, _unit UNIT) {
+func (p *logBean) SetRollingFile(fileDir, fileName string, maxNumber int32, maxSize int64, _unit UNIT) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	if maxNumber > 0 {
@@ -85,7 +85,7 @@ func (p *logBean) setRollingFile(fileDir, fileName string, maxNumber int32, maxS
 	fbf.add(fileDir, fileName, _suffix, p.maxFileSize, p.maxFileCount)
 }
 
-func (p *logBean) setRollingDaily(fileDir, fileName string) {
+func (p *logBean) SetRollingDaily(fileDir, fileName string) {
 	p.rolltype = _DAILY
 	mkdirlog(fileDir)
 	p.id = md5str(fmt.Sprint(fileDir, fileName))
@@ -170,19 +170,19 @@ func (p *logBean) log(level string, v ...interface{}) {
 	}
 }
 
-func (p *logBean) debug(v ...interface{}) {
+func (p *logBean) Debug(v ...interface{}) {
 	p.log("debug", v...)
 }
-func (p *logBean) info(v ...interface{}) {
+func (p *logBean) Info(v ...interface{}) {
 	p.log("info", v...)
 }
-func (p *logBean) warn(v ...interface{}) {
+func (p *logBean) Warn(v ...interface{}) {
 	p.log("warn", v...)
 }
-func (p *logBean) error(v ...interface{}) {
+func (p *logBean) Error(v ...interface{}) {
 	p.log("error", v...)
 }
-func (p *logBean) fatal(v ...interface{}) {
+func (p *logBean) Fatal(v ...interface{}) {
 	p.log("fatal", v...)
 }
 
