@@ -32,7 +32,7 @@ const (
 
 var skip int = 4
 
-type logBean struct {
+type LogBean struct {
 	mu              *sync.Mutex
 	logLevel        LEVEL
 	maxFileSize     int64
@@ -44,11 +44,11 @@ type logBean struct {
 	d, i, w, e, f   string //id
 }
 
-func (p *logBean) SetConsole(isConsole bool) {
+func (p *LogBean) SetConsole(isConsole bool) {
 	p.consoleAppender = isConsole
 }
 
-func (p *logBean) SetLevelFile(level LEVEL, dir, fileName string) {
+func (p *LogBean) SetLevelFile(level LEVEL, dir, fileName string) {
 	key := md5str(fmt.Sprint(dir, fileName))
 	switch level {
 	case DEBUG:
@@ -77,15 +77,15 @@ func (p *logBean) SetLevelFile(level LEVEL, dir, fileName string) {
 	fbf.add(dir, fileName, _suffix, p.maxFileSize, p.maxFileCount)
 }
 
-func (p *logBean) SetLevel(_level LEVEL) {
+func (p *LogBean) SetLevel(_level LEVEL) {
 	p.logLevel = _level
 }
 
-func (p *logBean) SetFormat(logFormat string) {
+func (p *LogBean) SetFormat(logFormat string) {
 	p.format = logFormat
 }
 
-func (p *logBean) SetRollingFile(fileDir, fileName string, maxNumber int32, maxSize int64, _unit UNIT) {
+func (p *LogBean) SetRollingFile(fileDir, fileName string, maxNumber int32, maxSize int64, _unit UNIT) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	if maxNumber > 0 {
@@ -108,14 +108,14 @@ func (p *logBean) SetRollingFile(fileDir, fileName string, maxNumber int32, maxS
 	fbf.add(fileDir, fileName, _suffix, p.maxFileSize, p.maxFileCount)
 }
 
-func (p *logBean) SetRollingDaily(fileDir, fileName string) {
+func (p *LogBean) SetRollingDaily(fileDir, fileName string) {
 	p.rolltype = _DAILY
 	mkdirlog(fileDir)
 	p.id = md5str(fmt.Sprint(fileDir, fileName))
 	fbf.add(fileDir, fileName, 0, 0, 0)
 }
 
-func (p *logBean) console(v ...interface{}) {
+func (p *LogBean) console(v ...interface{}) {
 	s := fmt.Sprint(v...)
 	if p.consoleAppender {
 		_, file, line, _ := runtime.Caller(skip)
@@ -142,7 +142,7 @@ func (p *logBean) console(v ...interface{}) {
 	}
 }
 
-func (p *logBean) log(level string, v ...interface{}) {
+func (p *LogBean) log(level string, v ...interface{}) {
 	defer catchError()
 	s := fmt.Sprint(v...)
 	length := len([]byte(s))
@@ -193,23 +193,23 @@ func (p *logBean) log(level string, v ...interface{}) {
 	}
 }
 
-func (p *logBean) Debug(v ...interface{}) {
+func (p *LogBean) Debug(v ...interface{}) {
 	p.log("debug", v...)
 }
-func (p *logBean) Info(v ...interface{}) {
+func (p *LogBean) Info(v ...interface{}) {
 	p.log("info", v...)
 }
-func (p *logBean) Warn(v ...interface{}) {
+func (p *LogBean) Warn(v ...interface{}) {
 	p.log("warn", v...)
 }
-func (p *logBean) Error(v ...interface{}) {
+func (p *LogBean) Error(v ...interface{}) {
 	p.log("error", v...)
 }
-func (p *logBean) Fatal(v ...interface{}) {
+func (p *LogBean) Fatal(v ...interface{}) {
 	p.log("fatal", v...)
 }
 
-func (p *logBean) fileCheck(fb *fileBean) {
+func (p *LogBean) fileCheck(fb *fileBean) {
 	defer catchError()
 	if p.isMustRename(fb) {
 		p.mu.Lock()
@@ -222,7 +222,7 @@ func (p *logBean) fileCheck(fb *fileBean) {
 
 //--------------------------------------------------------------------------------
 
-func (p *logBean) isMustRename(fb *fileBean) bool {
+func (p *LogBean) isMustRename(fb *fileBean) bool {
 	switch p.rolltype {
 	case _DAILY:
 		t, _ := time.Parse(_DATEFORMAT, time.Now().Format(_DATEFORMAT))
